@@ -42,6 +42,20 @@ export default function TicketPage({ params }: { params: { id: string } }) {
     }
   }
 
+  // 우선순위에 따른 배지 스타일 결정
+  const getPriorityBadgeVariant = (priority: string) => {
+    switch (priority) {
+      case "최우선":
+        return "destructive"
+      case "높음":
+        return "outline"
+      case "보통":
+        return "secondary"
+      default:
+        return "default"
+    }
+  }
+
   return (
     <div className="container mx-auto py-10">
       <div className="mb-6">
@@ -63,6 +77,7 @@ export default function TicketPage({ params }: { params: { id: string } }) {
             <div className="flex gap-2">
               <Badge variant={getSeverityBadgeVariant(ticket.severity)}>{ticket.severity}</Badge>
               <Badge variant={getStatusBadgeVariant(ticket.status)}>{ticket.status}</Badge>
+              <Badge variant={getPriorityBadgeVariant(ticket.priority)}>{ticket.priority}</Badge>
             </div>
           </div>
         </CardHeader>
@@ -73,8 +88,24 @@ export default function TicketPage({ params }: { params: { id: string } }) {
               <p>{ticket.assignee}</p>
             </div>
             <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-1">생성일</h3>
-              <p>{new Date().toLocaleDateString()}</p>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">보고자</h3>
+              <p>{ticket.reporter}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">마감일</h3>
+              <p>{ticket.dueDate}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">예상 소요 시간</h3>
+              <p>{ticket.estimatedTime}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">카테고리</h3>
+              <p>{ticket.category}</p>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-1">환경</h3>
+              <p>{ticket.environment}</p>
             </div>
           </div>
 
@@ -82,7 +113,9 @@ export default function TicketPage({ params }: { params: { id: string } }) {
             <h3 className="text-sm font-medium text-muted-foreground mb-2">설명</h3>
             <p className="text-sm">
               이 티켓은 {ticket.name.toLowerCase()}에 관한 작업입니다. 담당자 {ticket.assignee}님이 현재 {ticket.status}{" "}
-              상태로 처리 중입니다. 위험도는 {ticket.severity}이며, 우선순위에 맞게 처리되어야 합니다.
+              상태로 처리 중입니다. 위험도는 {ticket.severity}이며, 우선순위는 {ticket.priority}입니다.
+              {ticket.environment} 환경에서 {ticket.category} 작업으로 분류되었으며,
+              {ticket.dueDate}까지 완료되어야 합니다. 예상 소요 시간은 {ticket.estimatedTime}입니다.
             </p>
           </div>
 
@@ -106,7 +139,7 @@ export default function TicketPage({ params }: { params: { id: string } }) {
               <div className="flex items-start gap-2 text-sm">
                 <div className="w-24 flex-shrink-0 text-muted-foreground">3일 전</div>
                 <div>
-                  <p className="font-medium">티켓이 생성되었습니다.</p>
+                  <p className="font-medium">{ticket.reporter}님이 티켓을 생성했습니다.</p>
                 </div>
               </div>
             </div>

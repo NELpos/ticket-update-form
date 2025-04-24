@@ -36,6 +36,12 @@ export type Ticket = {
   severity: "낮음" | "중간" | "높음" | "긴급"
   status: "대기중" | "진행중" | "검토중" | "완료"
   assignee: string
+  priority: "낮음" | "보통" | "높음" | "최우선"
+  dueDate: string
+  category: "버그" | "기능개선" | "신규기능" | "문서화" | "유지보수"
+  environment: "개발" | "테스트" | "스테이징" | "운영"
+  estimatedTime: string
+  reporter: string
 }
 
 export const TicketTable = () => {
