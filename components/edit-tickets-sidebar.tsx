@@ -123,23 +123,23 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
             <div className="space-y-6">
               <div>
                 <h3 className="text-sm font-medium mb-2">선택된 티켓 ({tickets.length}개)</h3>
-                <ScrollArea className="h-[250px] border rounded-md p-2">
-                  <div className="space-y-1">
+                <ScrollArea className="h-[250px] border rounded-md p-2" orientation="both">
+                  <div className="space-y-1 min-w-[400px]">
                     {tickets.map((ticket) => (
                       <div key={ticket.id} className="space-y-1">
                         <div
                           className="flex items-center justify-between text-sm cursor-pointer hover:bg-muted/50 p-1 rounded-sm"
                           onClick={() => toggleTicketExpand(ticket.id)}
                         >
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 min-w-0">
                             {expandedTicketId === ticket.id ? (
-                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                              <ChevronDown className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                             ) : (
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                              <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                             )}
                             <span className="truncate">{ticket.name}</span>
                           </div>
-                          <span className="text-xs text-muted-foreground">{ticket.id}</span>
+                          <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">{ticket.id}</span>
                         </div>
                         {expandedTicketId === ticket.id && <TicketDetails ticket={ticket} />}
                       </div>

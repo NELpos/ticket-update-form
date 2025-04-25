@@ -8,7 +8,7 @@ interface TicketDetailsProps {
 export function TicketDetails({ ticket }: TicketDetailsProps) {
   return (
     <div className="pl-4 pr-2 py-2 bg-muted/30 rounded-md mt-1 space-y-2 text-sm">
-      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2 min-w-[380px]">
         <div>
           <span className="text-xs font-medium text-muted-foreground">위험도</span>
           <div>
