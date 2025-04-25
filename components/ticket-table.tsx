@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { EditTicketsDialog } from "@/components/edit-tickets-dialog"
+import { EditTicketsSidebar } from "@/components/edit-tickets-sidebar"
 import { mockTickets } from "@/data/mock-data"
 
 export type Ticket = {
@@ -50,7 +50,7 @@ export const TicketTable = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isEditSidebarOpen, setIsEditSidebarOpen] = useState(false)
 
   const columns: ColumnDef<Ticket>[] = [
     {
@@ -205,7 +205,7 @@ export const TicketTable = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setIsEditDialogOpen(true)}
+            onClick={() => setIsEditSidebarOpen(true)}
             disabled={table.getFilteredSelectedRowModel().rows.length === 0}
           >
             선택한 티켓 편집
@@ -279,7 +279,7 @@ export const TicketTable = () => {
           </Button>
         </div>
       </div>
-      <EditTicketsDialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen} tickets={selectedTickets} />
+      <EditTicketsSidebar open={isEditSidebarOpen} onOpenChange={setIsEditSidebarOpen} tickets={selectedTickets} />
     </div>
   )
 }
