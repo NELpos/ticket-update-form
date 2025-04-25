@@ -31,9 +31,24 @@ const fieldLabels: Record<string, string> = {
   reporter: "보고자",
 }
 
+// 폼 초기값
+const initialFormValues = {
+  name: "",
+  severity: "",
+  status: "",
+  assignee: "",
+  priority: "",
+  dueDate: "",
+  category: "",
+  environment: "",
+  estimatedTime: "",
+  reporter: "",
+}
+
 export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsSidebarProps) {
   // 사이드바 단계 관리 (0: 편집 폼, 1: 확인 화면)
   const [step, setStep] = useState(0)
+  const [formValues, setFormValues] = useState(initialFormValues)
   const [changes, setChanges] = useState<Record<string, any>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   // 선택된 티켓 ID 추적
@@ -41,6 +56,9 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
 
   // 폼 제출 처리
   const handleFormSubmit = (values: Record<string, any>) => {
+    // 폼 값 저장
+    setFormValues(values)
+
     // 빈 값을 제외한 변경 사항만 저장
     const changedValues = Object.fromEntries(Object.entries(values).filter(([_, value]) => value !== ""))
 
@@ -53,6 +71,11 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
     // 변경 사항이 있으면 확인 화면으로 이동
     setChanges(changedValues)
     setStep(1)
+  }
+
+  // 폼 초기화 처리
+  const handleFormReset = () => {
+    setFormValues(initialFormValues)
   }
 
   // 최종 업데이트 처리
@@ -68,6 +91,7 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
 
     setIsSubmitting(false)
     setStep(0) // 편집 폼으로 초기화
+    setFormValues(initialFormValues) // 폼 값 초기화
     onOpenChange(false) // 사이드바 닫기
   }
 
@@ -77,6 +101,7 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
       setStep(0)
       setChanges({})
       setExpandedTicketId(null)
+      setFormValues(initialFormValues)
     }
     onOpenChange(open)
   }
@@ -84,6 +109,17 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
   // 티켓 확장/축소 토글
   const toggleTicketExpand = (ticketId: string) => {
     setExpandedTicketId(expandedTicketId === ticketId ? null : ticketId)
+  }
+
+  // 이전 단계로 돌아가기 (폼 값 유지)
+  const handleBackToForm = () => {
+    setStep(0)
+  }
+
+  // 확인 화면에서 초기화 버튼 클릭 시
+  const handleResetFromConfirm = () => {
+    setFormValues(initialFormValues)
+    setStep(0)
   }
 
   // 변경된 필드만 필터링
@@ -101,14 +137,20 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
                 선택된 {tickets.length}개의 티켓을 일괄 편집합니다. 변경하지 않을 필드는 비워두세요.
               </SheetDescription>
             </SheetHeader>
-            <EditTicketsForm tickets={tickets} onSuccess={() => onOpenChange(false)} onSubmit={handleFormSubmit} />
+            <EditTicketsForm
+              tickets={tickets}
+              onSuccess={() => onOpenChange(false)}
+              onSubmit={handleFormSubmit}
+              onReset={handleFormReset}
+              initialValues={formValues}
+            />
           </>
         ) : (
           // 확인 화면 단계
           <>
             <SheetHeader className="mb-6">
               <div className="flex items-center">
-                <Button variant="ghost" size="icon" className="mr-2" onClick={() => setStep(0)}>
+                <Button variant="ghost" size="icon" className="mr-2" onClick={handleBackToForm}>
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
                 <div>
@@ -165,8 +207,11 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button type="button" variant="outline" onClick={() => setStep(0)}>
+                <Button type="button" variant="outline" onClick={handleBackToForm}>
                   이전으로
+                </Button>
+                <Button type="button" variant="secondary" onClick={handleResetFromConfirm}>
+                  초기화
                 </Button>
                 <Button onClick={handleConfirmUpdate} disabled={isSubmitting}>
                   {isSubmitting ? "업데이트 중..." : "예, 변경합니다"}

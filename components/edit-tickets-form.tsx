@@ -2,11 +2,11 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Check, ChevronsUpDown, Search } from "lucide-react"
+import { Check, ChevronsUpDown, Search, RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -44,6 +44,8 @@ interface EditTicketsFormProps {
   tickets: Ticket[]
   onSuccess: () => void
   onSubmit: (values: FormValues) => void
+  onReset: () => void
+  initialValues: FormValues
 }
 
 // 필드 정의
@@ -60,13 +62,26 @@ const fields = [
   { id: "reporter", label: "보고자", type: "select", options: reporters.map((r) => ({ value: r, label: r })) },
 ]
 
-export function EditTicketsForm({ tickets, onSuccess, onSubmit }: EditTicketsFormProps) {
+export function EditTicketsForm({ tickets, onSuccess, onSubmit, onReset, initialValues }: EditTicketsFormProps) {
   const [fieldSearch, setFieldSearch] = useState("")
   const [filteredFields, setFilteredFields] = useState(fields)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: initialValues,
+  })
+
+  // initialValues가 변경되면 폼 값을 업데이트
+  useEffect(() => {
+    form.reset(initialValues)
+  }, [form, initialValues])
+
+  function handleFormSubmit(values: FormValues) {
+    onSubmit(values)
+  }
+
+  function handleFormReset() {
+    form.reset({
       name: "",
       severity: "",
       status: "",
@@ -77,11 +92,8 @@ export function EditTicketsForm({ tickets, onSuccess, onSubmit }: EditTicketsFor
       environment: "",
       estimatedTime: "",
       reporter: "",
-    },
-  })
-
-  function handleFormSubmit(values: FormValues) {
-    onSubmit(values)
+    })
+    onReset()
   }
 
   // 필드 검색 처리
@@ -224,6 +236,10 @@ export function EditTicketsForm({ tickets, onSuccess, onSubmit }: EditTicketsFor
         <div className="flex justify-end gap-2 pt-4 border-t">
           <Button type="button" variant="outline" onClick={() => onSuccess()}>
             취소
+          </Button>
+          <Button type="button" variant="secondary" onClick={handleFormReset}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            초기화
           </Button>
           <Button type="submit">티켓 업데이트</Button>
         </div>
