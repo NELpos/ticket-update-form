@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronRight } from "lucide-react"
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,8 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
   const [step, setStep] = useState(0)
   const [changes, setChanges] = useState<Record<string, any>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  // 선택된 티켓 ID 추적
+  const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null)
 
   // 폼 제출 처리
   const handleFormSubmit = (values: Record<string, any>) => {
@@ -73,12 +75,94 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
     if (!open) {
       setStep(0)
       setChanges({})
+      setExpandedTicketId(null)
     }
     onOpenChange(open)
   }
 
+  // 티켓 확장/축소 토글
+  const toggleTicketExpand = (ticketId: string) => {
+    setExpandedTicketId(expandedTicketId === ticketId ? null : ticketId)
+  }
+
   // 변경된 필드만 필터링
   const changedFields = Object.entries(changes)
+
+  // 티켓 상세 정보 렌더링
+  const renderTicketDetails = (ticket: Ticket) => {
+    return (
+      <div className="pl-4 pr-2 py-2 bg-muted/30 rounded-md mt-1 space-y-2 text-sm">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">위험도</span>
+            <div>
+              <Badge
+                variant={
+                  ticket.severity === "긴급"
+                    ? "destructive"
+                    : ticket.severity === "높음"
+                      ? "outline"
+                      : ticket.severity === "중간"
+                        ? "secondary"
+                        : "default"
+                }
+                className="mt-1"
+              >
+                {ticket.severity}
+              </Badge>
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">상태</span>
+            <div>
+              <Badge
+                variant={
+                  ticket.status === "완료"
+                    ? "default"
+                    : ticket.status === "진행중"
+                      ? "outline"
+                      : ticket.status === "검토중"
+                        ? "secondary"
+                        : "destructive"
+                }
+                className="mt-1"
+              >
+                {ticket.status}
+              </Badge>
+            </div>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">담당자</span>
+            <p>{ticket.assignee}</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">보고자</span>
+            <p>{ticket.reporter}</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">우선순위</span>
+            <p>{ticket.priority}</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">카테고리</span>
+            <p>{ticket.category}</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">환경</span>
+            <p>{ticket.environment}</p>
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground">예상 소요 시간</span>
+            <p>{ticket.estimatedTime}</p>
+          </div>
+          <div className="col-span-2">
+            <span className="text-xs font-medium text-muted-foreground">마감일</span>
+            <p>{ticket.dueDate}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -114,12 +198,25 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
             <div className="space-y-6">
               <div>
                 <h3 className="text-sm font-medium mb-2">선택된 티켓 ({tickets.length}개)</h3>
-                <ScrollArea className="h-[150px] border rounded-md p-2">
+                <ScrollArea className="h-[250px] border rounded-md p-2">
                   <div className="space-y-1">
                     {tickets.map((ticket) => (
-                      <div key={ticket.id} className="flex items-center justify-between text-sm">
-                        <span className="truncate">{ticket.name}</span>
-                        <span className="text-xs text-muted-foreground">{ticket.id}</span>
+                      <div key={ticket.id} className="space-y-1">
+                        <div
+                          className="flex items-center justify-between text-sm cursor-pointer hover:bg-muted/50 p-1 rounded-sm"
+                          onClick={() => toggleTicketExpand(ticket.id)}
+                        >
+                          <div className="flex items-center space-x-2">
+                            {expandedTicketId === ticket.id ? (
+                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className="truncate">{ticket.name}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{ticket.id}</span>
+                        </div>
+                        {expandedTicketId === ticket.id && renderTicketDetails(ticket)}
                       </div>
                     ))}
                   </div>
