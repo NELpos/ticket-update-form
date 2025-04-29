@@ -14,16 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import type { Ticket } from "@/components/ticket-table"
-import {
-  assignees,
-  severityOptions,
-  statusOptions,
-  priorityOptions,
-  categoryOptions,
-  environmentOptions,
-  reporters,
-} from "@/data/mock-data"
+import type { Ticket, OptionData } from "@/components/ticket-table"
 
 const formSchema = z.object({
   name: z.string().optional(),
@@ -42,29 +33,52 @@ type FormValues = z.infer<typeof formSchema>
 
 interface EditTicketsFormProps {
   tickets: Ticket[]
+  options: OptionData
   onSuccess: () => void
   onSubmit: (values: FormValues) => void
   onReset: () => void
   initialValues: FormValues
 }
 
-// 필드 정의
-const fields = [
-  { id: "name", label: "티켓 이름", type: "input" },
-  { id: "severity", label: "위험도", type: "select", options: severityOptions },
-  { id: "status", label: "상태", type: "select", options: statusOptions },
-  { id: "assignee", label: "담당자", type: "select", options: assignees.map((a) => ({ value: a, label: a })) },
-  { id: "priority", label: "우선순위", type: "select", options: priorityOptions },
-  { id: "dueDate", label: "마감일", type: "date" },
-  { id: "category", label: "카테고리", type: "select", options: categoryOptions },
-  { id: "environment", label: "환경", type: "select", options: environmentOptions },
-  { id: "estimatedTime", label: "예상 소요 시간", type: "input" },
-  { id: "reporter", label: "보고자", type: "select", options: reporters.map((r) => ({ value: r, label: r })) },
-]
-
-export function EditTicketsForm({ tickets, onSuccess, onSubmit, onReset, initialValues }: EditTicketsFormProps) {
+export function EditTicketsForm({
+  tickets,
+  options,
+  onSuccess,
+  onSubmit,
+  onReset,
+  initialValues,
+}: EditTicketsFormProps) {
   const [fieldSearch, setFieldSearch] = useState("")
-  const [filteredFields, setFilteredFields] = useState(fields)
+  const [filteredFields, setFilteredFields] = useState<any[]>([])
+
+  // 필드 정의 - 데이터베이스에서 가져온 옵션 사용
+  const fields = [
+    { id: "name", label: "티켓 이름", type: "input" },
+    { id: "severity", label: "위험도", type: "select", options: options.severityOptions },
+    { id: "status", label: "상태", type: "select", options: options.statusOptions },
+    {
+      id: "assignee",
+      label: "담당자",
+      type: "select",
+      options: options.assignees.map((a) => ({ value: a, label: a })),
+    },
+    { id: "priority", label: "우선순위", type: "select", options: options.priorityOptions },
+    { id: "dueDate", label: "마감일", type: "date" },
+    { id: "category", label: "카테고리", type: "select", options: options.categoryOptions },
+    { id: "environment", label: "환경", type: "select", options: options.environmentOptions },
+    { id: "estimatedTime", label: "예상 소요 시간", type: "input" },
+    {
+      id: "reporter",
+      label: "보고자",
+      type: "select",
+      options: options.reporters.map((r) => ({ value: r, label: r })),
+    },
+  ]
+
+  // 컴포넌트 마운트 시 필드 초기화
+  useEffect(() => {
+    setFilteredFields(fields)
+  }, [])
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, ChevronDown, ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronDown, ChevronRight, CheckCircle, XCircle, Loader2 } from "lucide-react"
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
@@ -9,12 +9,13 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { EditTicketsForm } from "@/components/edit-tickets-form"
 import { TicketDetails } from "@/components/ticket-details"
-import type { Ticket } from "@/components/ticket-table"
+import type { Ticket, OptionData } from "@/components/ticket-table"
 
 interface EditTicketsSidebarProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   tickets: Ticket[]
+  options: OptionData
 }
 
 // 필드 레이블 매핑
@@ -45,14 +46,24 @@ const initialFormValues = {
   reporter: "",
 }
 
-export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsSidebarProps) {
-  // 사이드바 단계 관리 (0: 편집 폼, 1: 확인 화면)
+// 티켓 업데이트 결과 타입
+type TicketUpdateResult = {
+  ticketId: string
+  name: string
+  success: boolean
+  message: string
+}
+
+export function EditTicketsSidebar({ open, onOpenChange, tickets, options }: EditTicketsSidebarProps) {
+  // 사이드바 단계 관리 (0: 편집 폼, 1: 확인 화면, 2: 결과 화면)
   const [step, setStep] = useState(0)
   const [formValues, setFormValues] = useState(initialFormValues)
   const [changes, setChanges] = useState<Record<string, any>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   // 선택된 티켓 ID 추적
   const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null)
+  // 티켓 업데이트 결과
+  const [updateResults, setUpdateResults] = useState<TicketUpdateResult[]>([])
 
   // 폼 제출 처리
   const handleFormSubmit = (values: Record<string, any>) => {
@@ -78,6 +89,19 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
     setFormValues(initialFormValues)
   }
 
+  // 랜덤 업데이트 결과 생성 함수
+  const generateRandomUpdateResults = (tickets: Ticket[]): TicketUpdateResult[] => {
+    return tickets.map((ticket) => {
+      const success = Math.random() > 0.3 // 70% 확률로 성공
+      return {
+        ticketId: ticket.id,
+        name: ticket.name,
+        success,
+        message: success ? "티켓이 성공적으로 업데이트되었습니다." : "티켓 업데이트 중 오류가 발생했습니다.",
+      }
+    })
+  }
+
   // 최종 업데이트 처리
   const handleConfirmUpdate = async () => {
     setIsSubmitting(true)
@@ -87,12 +111,14 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
     console.log("업데이트 값:", changes)
 
     // API 호출 시뮬레이션
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // 랜덤 업데이트 결과 생성
+    const results = generateRandomUpdateResults(tickets)
+    setUpdateResults(results)
 
     setIsSubmitting(false)
-    setStep(0) // 편집 폼으로 초기화
-    setFormValues(initialFormValues) // 폼 값 초기화
-    onOpenChange(false) // 사이드바 닫기
+    setStep(2) // 결과 화면으로 이동
   }
 
   // 사이드바가 닫힐 때 상태 초기화
@@ -102,6 +128,7 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
       setChanges({})
       setExpandedTicketId(null)
       setFormValues(initialFormValues)
+      setUpdateResults([])
     }
     onOpenChange(open)
   }
@@ -122,8 +149,24 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
     setStep(0)
   }
 
+  // 결과 화면에서 완료 버튼 클릭 시
+  const handleComplete = () => {
+    setStep(0) // 편집 폼으로 초기화
+    setFormValues(initialFormValues) // 폼 값 초기화
+    onOpenChange(false) // 사이드바 닫기
+  }
+
+  // 결과 화면에서 다시 시도 버튼 클릭 시
+  const handleRetry = () => {
+    setStep(1) // 확인 화면으로 돌아가기
+  }
+
   // 변경된 필드만 필터링
   const changedFields = Object.entries(changes)
+
+  // 성공한 티켓과 실패한 티켓 분리
+  const successTickets = updateResults.filter((result) => result.success)
+  const failedTickets = updateResults.filter((result) => !result.success)
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
@@ -139,13 +182,14 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
             </SheetHeader>
             <EditTicketsForm
               tickets={tickets}
+              options={options}
               onSuccess={() => onOpenChange(false)}
               onSubmit={handleFormSubmit}
               onReset={handleFormReset}
               initialValues={formValues}
             />
           </>
-        ) : (
+        ) : step === 1 ? (
           // 확인 화면 단계
           <>
             <SheetHeader className="mb-6">
@@ -214,8 +258,79 @@ export function EditTicketsSidebar({ open, onOpenChange, tickets }: EditTicketsS
                   초기화
                 </Button>
                 <Button onClick={handleConfirmUpdate} disabled={isSubmitting}>
-                  {isSubmitting ? "업데이트 중..." : "예, 변경합니다"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      업데이트 중...
+                    </>
+                  ) : (
+                    "예, 변경합니다"
+                  )}
                 </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          // 결과 화면 단계
+          <>
+            <SheetHeader className="mb-6">
+              <SheetTitle>티켓 업데이트 결과</SheetTitle>
+              <SheetDescription>
+                {tickets.length}개의 티켓 중 {successTickets.length}개 성공, {failedTickets.length}개 실패
+              </SheetDescription>
+            </SheetHeader>
+
+            <div className="space-y-6">
+              {successTickets.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium mb-2 text-green-600 flex items-center">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    성공 ({successTickets.length}개)
+                  </h3>
+                  <ScrollArea className="h-[150px] border border-green-200 rounded-md p-2 bg-green-50">
+                    <div className="space-y-1">
+                      {successTickets.map((result) => (
+                        <div key={result.ticketId} className="text-sm p-1 rounded-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="truncate">{result.name}</span>
+                            <span className="text-xs text-muted-foreground ml-2">{result.ticketId}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+
+              {failedTickets.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium mb-2 text-red-600 flex items-center">
+                    <XCircle className="h-4 w-4 mr-2" />
+                    실패 ({failedTickets.length}개)
+                  </h3>
+                  <ScrollArea className="h-[150px] border border-red-200 rounded-md p-2 bg-red-50">
+                    <div className="space-y-1">
+                      {failedTickets.map((result) => (
+                        <div key={result.ticketId} className="text-sm p-1 rounded-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="truncate">{result.name}</span>
+                            <span className="text-xs text-muted-foreground ml-2">{result.ticketId}</span>
+                          </div>
+                          <p className="text-xs text-red-600 mt-1">{result.message}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                {failedTickets.length > 0 && (
+                  <Button type="button" variant="outline" onClick={handleRetry}>
+                    다시 시도
+                  </Button>
+                )}
+                <Button onClick={handleComplete}>완료</Button>
               </div>
             </div>
           </>

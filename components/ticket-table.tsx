@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { EditTicketsSidebar } from "@/components/edit-tickets-sidebar"
 import { mockTickets } from "@/data/mock-data"
+import type { SelectOption } from "@/db/schema"
 
 export type Ticket = {
   id: string
@@ -44,7 +45,21 @@ export type Ticket = {
   reporter: string
 }
 
-export const TicketTable = () => {
+export type OptionData = {
+  severityOptions: SelectOption[]
+  statusOptions: SelectOption[]
+  priorityOptions: SelectOption[]
+  categoryOptions: SelectOption[]
+  environmentOptions: SelectOption[]
+  assignees: string[]
+  reporters: string[]
+}
+
+interface TicketTableProps {
+  initialOptions: OptionData
+}
+
+export const TicketTable = ({ initialOptions }: TicketTableProps) => {
   const router = useRouter()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -279,7 +294,12 @@ export const TicketTable = () => {
           </Button>
         </div>
       </div>
-      <EditTicketsSidebar open={isEditSidebarOpen} onOpenChange={setIsEditSidebarOpen} tickets={selectedTickets} />
+      <EditTicketsSidebar
+        open={isEditSidebarOpen}
+        onOpenChange={setIsEditSidebarOpen}
+        tickets={selectedTickets}
+        options={initialOptions}
+      />
     </div>
   )
 }
