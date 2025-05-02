@@ -173,7 +173,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
   const selectedTickets = table.getFilteredSelectedRowModel().rows.map((row) => row.original)
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Input
@@ -231,7 +231,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
           </Button>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border flex-1 overflow-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
