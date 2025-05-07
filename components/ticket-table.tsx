@@ -43,6 +43,7 @@ export type Ticket = {
   environment: "개발" | "테스트" | "스테이징" | "운영"
   estimatedTime: string
   reporter: string
+  createdAt: string // 생성 날짜 필드 추가
 }
 
 export type OptionData = {
@@ -149,6 +150,16 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
       header: "담당자",
       cell: ({ row }) => <div>{row.getValue("assignee")}</div>,
     },
+    {
+      accessorKey: "createdAt",
+      header: "생성 날짜",
+      cell: ({ row }) => {
+        const createdAt = row.getValue("createdAt") as string
+        // ISO 날짜 문자열을 YYYY-MM-DD 형식으로 변환
+        const formattedDate = new Date(createdAt).toLocaleDateString()
+        return <div className="text-muted-foreground text-sm">{formattedDate}</div>
+      },
+    },
   ]
 
   const table = useReactTable({
@@ -209,7 +220,9 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
                             ? "상태"
                             : column.id === "assignee"
                               ? "담당자"
-                              : column.id}
+                              : column.id === "createdAt"
+                                ? "생성 날짜"
+                                : column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}

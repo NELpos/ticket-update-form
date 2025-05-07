@@ -42,6 +42,8 @@ const initialMessages: Message[] = [
 export function ChatPanel() {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [newMessage, setNewMessage] = useState("")
+  const [messageHistory, setMessageHistory] = useState<string[]>([])
+  const [historyIndex, setHistoryIndex] = useState(-1)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
@@ -62,7 +64,12 @@ export function ChatPanel() {
     }
 
     setMessages((prev) => [...prev, userMessage])
+
+    // 메시지 히스토리에 추가
+    setMessageHistory((prev) => [newMessage, ...prev.slice(0, 19)]) // 최대 20개 저장
+
     setNewMessage("")
+    setHistoryIndex(-1) // 히스토리 인덱스 초기화
 
     // 자동 응답 (실제로는 API 호출 등으로 대체)
     setTimeout(() => {
@@ -76,11 +83,41 @@ export function ChatPanel() {
     }, 1000)
   }
 
-  // 엔터 키 처리
+  // 키보드 이벤트 처리
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // 엔터 키로 메시지 전송
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       handleSendMessage()
+    }
+
+    // 오른쪽 화살표 키로 이전 메시지 불러오기 (입력 필드가 비어있을 때만)
+    if (e.key === "ArrowRight" && !newMessage && messageHistory.length > 0) {
+      const nextIndex = (historyIndex + 1) % messageHistory.length
+      setHistoryIndex(nextIndex)
+      setNewMessage(messageHistory[nextIndex])
+    }
+
+    // 위쪽 화살표 키로 이전 메시지 탐색
+    if (e.key === "ArrowUp" && messageHistory.length > 0) {
+      e.preventDefault()
+      const nextIndex = historyIndex >= 0 ? (historyIndex + 1) % messageHistory.length : 0
+      setHistoryIndex(nextIndex)
+      setNewMessage(messageHistory[nextIndex])
+    }
+
+    // 아래쪽 화살표 키로 다음 메시지 탐색
+    if (e.key === "ArrowDown" && messageHistory.length > 0 && historyIndex >= 0) {
+      e.preventDefault()
+      const nextIndex = (historyIndex - 1 + messageHistory.length) % messageHistory.length
+      setHistoryIndex(nextIndex)
+      setNewMessage(messageHistory[nextIndex])
+    }
+
+    // ESC 키로 입력 필드 초기화
+    if (e.key === "Escape") {
+      setNewMessage("")
+      setHistoryIndex(-1)
     }
   }
 
@@ -141,6 +178,11 @@ export function ChatPanel() {
             <Send className="h-4 w-4" />
           </Button>
         </div>
+        {historyIndex >= 0 && (
+          <p className="text-xs text-muted-foreground mt-1">
+            히스토리 {historyIndex + 1}/{messageHistory.length}
+          </p>
+        )}
       </div>
     </div>
   )

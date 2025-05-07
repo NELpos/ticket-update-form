@@ -6,6 +6,12 @@ interface TicketDetailsProps {
 }
 
 export function TicketDetails({ ticket }: TicketDetailsProps) {
+  // 날짜 포맷 함수
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString()
+  }
+
   return (
     <div className="pl-4 pr-2 py-2 bg-muted/30 rounded-md mt-1 space-y-2 text-sm">
       <div className="grid grid-cols-2 gap-x-4 gap-y-2 min-w-[380px]">
@@ -74,6 +80,10 @@ export function TicketDetails({ ticket }: TicketDetailsProps) {
         <div className="col-span-2">
           <span className="text-xs font-medium text-muted-foreground">마감일</span>
           <p>{ticket.dueDate}</p>
+        </div>
+        <div className="col-span-2">
+          <span className="text-xs font-medium text-muted-foreground">생성 날짜</span>
+          <p>{formatDate(ticket.createdAt)}</p>
         </div>
       </div>
     </div>

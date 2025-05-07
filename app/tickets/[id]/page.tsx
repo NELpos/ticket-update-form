@@ -82,6 +82,12 @@ export default function TicketPage({ params }: { params: { id: string } }) {
     }
   }
 
+  // 날짜 포맷 함수
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString()
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* 왼쪽 채팅 패널 */}
@@ -115,6 +121,7 @@ export default function TicketPage({ params }: { params: { id: string } }) {
                 <div>
                   <CardTitle className="text-2xl">{ticket.name}</CardTitle>
                   <CardDescription>티켓 ID: {ticket.id}</CardDescription>
+                  <CardDescription className="mt-1">생성 날짜: {formatDate(ticket.createdAt)}</CardDescription>
                 </div>
                 <div className="flex gap-2">
                   <Badge variant={getSeverityBadgeVariant(ticket.severity)}>{ticket.severity}</Badge>
@@ -179,7 +186,7 @@ export default function TicketPage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
                   <div className="flex items-start gap-2 text-sm">
-                    <div className="w-24 flex-shrink-0 text-muted-foreground">3일 전</div>
+                    <div className="w-24 flex-shrink-0 text-muted-foreground">{formatDate(ticket.createdAt)}</div>
                     <div>
                       <p className="font-medium">{ticket.reporter}님이 티켓을 생성했습니다.</p>
                     </div>

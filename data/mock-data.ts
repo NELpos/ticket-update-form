@@ -82,10 +82,14 @@ function generateMockTickets(count: number): Ticket[] {
     const environmentIndex = Math.floor(Math.random() * environmentOptions.length)
     const reporterIndex = Math.floor(Math.random() * reporters.length)
 
-    // 현재 날짜에서 -30일부터 +60일 사이의 랜덤한 날짜 생성
+    // 현재 날짜에서 -30일부터 +60일 사이의 랜덤한 날짜 생성 (마감일)
     const today = new Date()
     const dueDate = new Date(today)
     dueDate.setDate(today.getDate() + Math.floor(Math.random() * 90) - 30)
+
+    // 생성 날짜: 현재 날짜에서 -90일부터 현재까지의 랜덤한 날짜
+    const createdAt = new Date(today)
+    createdAt.setDate(today.getDate() - Math.floor(Math.random() * 90))
 
     // 1시간에서 40시간 사이의 랜덤한 예상 소요 시간
     const estimatedTime = Math.floor(Math.random() * 40) + 1
@@ -102,6 +106,7 @@ function generateMockTickets(count: number): Ticket[] {
       environment: environmentOptions[environmentIndex].value as any,
       estimatedTime: `${estimatedTime}시간`,
       reporter: reporters[reporterIndex],
+      createdAt: createdAt.toISOString(), // ISO 형식의 생성 날짜
     })
   }
 
