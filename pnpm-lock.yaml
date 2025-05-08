@@ -13,13 +13,13 @@ importers:
         version: 3.804.0
       '@cloudflare/workers-types':
         specifier: latest
-        version: 4.20250507.0
+        version: 4.20250508.0
       '@electric-sql/pglite':
         specifier: latest
         version: 0.3.0
       '@hookform/resolvers':
         specifier: latest
-        version: 5.0.1(react-hook-form@7.56.2(react@19.0.0))
+        version: 5.0.1(react-hook-form@7.56.3(react@19.0.0))
       '@libsql/client':
         specifier: latest
         version: 0.15.4(bufferutil@4.0.9)
@@ -31,7 +31,7 @@ importers:
         version: 1.0.0
       '@op-engineering/op-sqlite':
         specifier: latest
-        version: 13.0.0(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)
+        version: 13.0.1(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)
       '@opentelemetry/api':
         specifier: latest
         version: 1.9.0
@@ -148,7 +148,7 @@ importers:
         version: 10.4.20(postcss@8.0.0)
       better-sqlite3:
         specifier: latest
-        version: 11.9.1
+        version: 11.10.0
       bun-types:
         specifier: latest
         version: 1.2.12
@@ -166,7 +166,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: latest
-        version: 0.43.1(d90a63b16a23f5ba5ce426d048a7e628)
+        version: 0.43.1(74d3d8b32ed8b93e34ef370d73aa8fd0)
       embla-carousel-react:
         specifier: 8.5.1
         version: 8.5.1(react@19.0.0)
@@ -181,7 +181,7 @@ importers:
         version: 1.4.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       knex:
         specifier: latest
-        version: 3.1.0(better-sqlite3@11.9.1)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7)
+        version: 3.1.0(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7)
       kysely:
         specifier: latest
         version: 0.28.2
@@ -194,6 +194,9 @@ importers:
       next:
         specifier: 15.2.4
         version: 15.2.4(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      next-intl:
+        specifier: latest
+        version: 4.1.0(next@15.2.4(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(typescript@5.0.2)
       next-themes:
         specifier: ^0.4.4
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -214,7 +217,7 @@ importers:
         version: 19.0.0(react@19.0.0)
       react-hook-form:
         specifier: latest
-        version: 7.56.2(react@19.0.0)
+        version: 7.56.3(react@19.0.0)
       react-resizable-panels:
         specifier: ^2.1.7
         version: 2.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -872,8 +875,8 @@ packages:
     resolution: {integrity: sha512-+EzkxvLNfiUeKMgy/3luqfsCWFRXLb7U6wNQTk60tovuckwB15B191tJWvpp4HjiQWdJkCxO3Wbvc6jlk3Xb2Q==}
     engines: {node: '>=6.9.0'}
 
-  '@cloudflare/workers-types@4.20250507.0':
-    resolution: {integrity: sha512-fkrq7A6XWgPEmXJDwu9TS/Zw7qho3eGlrOlicKue32Bdul0Ma4Mym4sh7ZeGbayBXxkOx/fHpm5GfhVEtngRWQ==}
+  '@cloudflare/workers-types@4.20250508.0':
+    resolution: {integrity: sha512-Gr7NLsHy5BFXbWVMMO+1mf/DwxT30tNw5LGhC86S+CXErM2a2eJ0HJHqgAs0Y8Lt/XEUSrH9QrUFDvJWNhE4Rg==}
 
   '@electric-sql/pglite@0.3.0':
     resolution: {integrity: sha512-ou1PA24kStSNpQVGdzDg1FGRzO7AQ3O6OX5FryupMdHkSfSswG2ZVXjCzzJKK88KLk+Q4QinKjZIUtmMeec5rg==}
@@ -967,6 +970,24 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@formatjs/ecma402-abstract@2.3.4':
+    resolution: {integrity: sha512-qrycXDeaORzIqNhBOx0btnhpD1c+/qFIHAN9znofuMJX6QBwtbrmlpWfD4oiUUD2vJUOIYFA/gYtg2KAMGG7sA==}
+
+  '@formatjs/fast-memoize@2.2.7':
+    resolution: {integrity: sha512-Yabmi9nSvyOMrlSeGGWDiH7rf3a7sIwplbvo/dlz9WCIjzIQAfy1RMf4S0X3yG724n5Ghu2GmEl5NJIV6O9sZQ==}
+
+  '@formatjs/icu-messageformat-parser@2.11.2':
+    resolution: {integrity: sha512-AfiMi5NOSo2TQImsYAg8UYddsNJ/vUEv/HaNqiFjnI3ZFfWihUtD5QtuX6kHl8+H+d3qvnE/3HZrfzgdWpsLNA==}
+
+  '@formatjs/icu-skeleton-parser@1.8.14':
+    resolution: {integrity: sha512-i4q4V4qslThK4Ig8SxyD76cp3+QJ3sAqr7f6q9VVfeGtxG9OhiAk3y9XF6Q41OymsKzsGQ6OQQoJNY4/lI8TcQ==}
+
+  '@formatjs/intl-localematcher@0.5.10':
+    resolution: {integrity: sha512-af3qATX+m4Rnd9+wHcjJ4w2ijq+rAVP3CCinJQvFv1kgSu1W6jypUmvleJxcewdxmutM8dmIRZFxO/IQBZmP2Q==}
+
+  '@formatjs/intl-localematcher@0.6.1':
+    resolution: {integrity: sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg==}
 
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -1283,8 +1304,8 @@ packages:
     engines: {node: '>=10'}
     deprecated: This functionality has been moved to @npmcli/fs
 
-  '@op-engineering/op-sqlite@13.0.0':
-    resolution: {integrity: sha512-9dEml4/YLtImq/Dld5/bafAfppxLx3HBRG6oN3y+WHPYk8iCVG+NLXUgTRwE8BSZrGl6xH6u3OaY/T1xnXXDmw==}
+  '@op-engineering/op-sqlite@13.0.1':
+    resolution: {integrity: sha512-gXK6JhKLFTbAoKCog6G8QLBMcKzGlOinh+UXbRu0CA/2bp+laRkx7hDShj8I77oyxfSPPoraDDkQJFemmMZ2aw==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -2221,6 +2242,9 @@ packages:
       '@types/react':
         optional: true
 
+  '@schummar/icu-type-parser@1.21.5':
+    resolution: {integrity: sha512-bXHSaW5jRTmke9Vd0h5P7BtWZG9Znqb8gSDxZnxaGSJnGwPLDPfS+3g0BKzeWqzgZPsIVZkM7m2tbo18cm5HBw==}
+
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
@@ -2486,8 +2510,8 @@ packages:
   '@types/node@22.0.0':
     resolution: {integrity: sha512-VT7KSYudcPOzP5Q0wfbowyNLaVR8QWUdw+088uFWwfvpY6uCWaXpqV6ieLAu9WBcnTa7H4Z5RLK8I5t2FuOcqw==}
 
-  '@types/node@22.15.14':
-    resolution: {integrity: sha512-BL1eyu/XWsFGTtDWOYULQEs4KR0qdtYfCxYAUYRoB7JP7h9ETYLgQTww6kH8Sj2C0pFGgrpM0XKv6/kbIzYJ1g==}
+  '@types/node@22.15.16':
+    resolution: {integrity: sha512-3pr+KjwpVujqWqOKT8mNR+rd09FqhBLwg+5L/4t0cNYBzm/yEiYGCxWttjaPBsLtAo+WFNoXzGJfolM1JuRXoA==}
 
   '@types/pg@8.11.6':
     resolution: {integrity: sha512-/2WmmBXHLsfRqzfHW7BNZ8SbYzE8OSk7i3WjFYvfgRHj7S1xj+16Je5fUKv3lVdVzk/zn9TXOqf+avFCFIE0yQ==}
@@ -2716,8 +2740,8 @@ packages:
     resolution: {integrity: sha512-aVNobHnJqLiUelTaHat9DZ1qM2w0C0Eym4LPI/3JxOnSokGVdsl1T1kN7TFvsEAD8G47A6VKQ0TVHqbBnYMJlQ==}
     engines: {node: '>=12.0.0'}
 
-  better-sqlite3@11.9.1:
-    resolution: {integrity: sha512-Ba0KR+Fzxh2jDRhdg6TSH0SJGzb8C0aBY4hR8w8madIdIzzC6Y1+kx5qR6eS1Z+Gy20h6ZU28aeyg0z1VIrShQ==}
+  better-sqlite3@11.10.0:
+    resolution: {integrity: sha512-EwhOpyXiOEL/lKzHz9AW1msWFNzGc/z+LzeB3/jnFJpxu+th2yqvzsSWas1v9jgs9+xiXJcD5A8CJxAG2TaghQ==}
 
   big-integer@1.6.52:
     resolution: {integrity: sha512-QxD8cf2eVqJOOz63z6JIN9BzvVs/dlySa5HGSBH5xtR8dPteIRQnBxxKqkNTiT6jbDTF6jAfrd4oMcND9RGbQg==}
@@ -3072,6 +3096,9 @@ packages:
   decimal.js-light@2.5.1:
     resolution: {integrity: sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==}
 
+  decimal.js@10.5.0:
+    resolution: {integrity: sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==}
+
   decompress-response@6.0.0:
     resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
     engines: {node: '>=10'}
@@ -3234,8 +3261,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.150:
-    resolution: {integrity: sha512-rOOkP2ZUMx1yL4fCxXQKDHQ8ZXwisb2OycOQVKHgvB3ZI4CvehOd4y2tfnnLDieJ3Zs1RL1Dlp3cMkyIn7nnXA==}
+  electron-to-chromium@1.5.151:
+    resolution: {integrity: sha512-Rl6uugut2l9sLojjS4H4SAr3A4IgACMLgpuEMPYCVcKydzfyPrn5absNRju38IhQOf/NwjJY8OGWjlteqYeBCA==}
 
   embla-carousel-react@8.5.1:
     resolution: {integrity: sha512-z9Y0K84BJvhChXgqn2CFYbfEi6AwEr+FFVVKm/MqbTQ2zIzO1VQri6w67LcfpVF0AjbhwVMywDZqY4alYkjW5w==}
@@ -3654,6 +3681,9 @@ packages:
   interpret@2.2.0:
     resolution: {integrity: sha512-Ju0Bz/cEia55xDwUWEa8+olFpCiQoypjnQySseKtmjNrnps3P+xfpUmGr90T7yjlVJmOtybRvPXhKMbHr+fWnw==}
     engines: {node: '>= 0.10'}
+
+  intl-messageformat@10.7.16:
+    resolution: {integrity: sha512-UmdmHUmp5CIKKjSoE10la5yfU+AYJAaiYLsodbjL4lji83JNvgOQUjGaGhGrpFCb0Uh7sl7qfP1IyILa8Z40ug==}
 
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
@@ -4200,8 +4230,22 @@ packages:
     resolution: {integrity: sha512-myRT3DiWPHqho5PrJaIRyaMv2kgYf0mUVgBNOYMuCH5Ki1yEiQaf/ZJuQ62nvpc44wL5WDbTX7yGJi1Neevw8w==}
     engines: {node: '>= 0.6'}
 
+  negotiator@1.0.0:
+    resolution: {integrity: sha512-8Ofs/AUQh8MaEcrlq5xOX0CQ9ypTF5dl78mjlMNfOK08fzpgTHQRQPBxcPlEtIw0yRpws+Zo/3r+5WRby7u3Gg==}
+    engines: {node: '>= 0.6'}
+
   nested-error-stacks@2.0.1:
     resolution: {integrity: sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==}
+
+  next-intl@4.1.0:
+    resolution: {integrity: sha512-JNJRjc7sdnfUxhZmGcvzDszZ60tQKrygV/VLsgzXhnJDxQPn1cN2rVpc53adA1SvBJwPK2O6Sc6b4gYSILjCzw==}
+    peerDependencies:
+      next: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   next-themes@0.4.4:
     resolution: {integrity: sha512-LDQ2qIOJF0VnuVrrMSMLrWGjRMkq+0mpgl6e0juCLqdJ+oo8Q84JRWT6Wh11VDQKkMMe+dVzDKLWs5n87T+PkQ==}
@@ -4635,16 +4679,16 @@ packages:
       date-fns: ^2.28.0 || ^3.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
-  react-devtools-core@6.1.1:
-    resolution: {integrity: sha512-TFo1MEnkqE6hzAbaztnyR5uLTMoz6wnEWwWBsCUzNt+sVXJycuRJdDqvL078M4/h65BI/YO5XWTaxZDWVsW0fw==}
+  react-devtools-core@6.1.2:
+    resolution: {integrity: sha512-ldFwzufLletzCikNJVYaxlxMLu7swJ3T2VrGfzXlMsVhZhPDKXA38DEROidaYZVgMAmQnIjymrmqto5pyfrwPA==}
 
   react-dom@19.0.0:
     resolution: {integrity: sha512-4GV5sHFG0e/0AD4X+ySy6UJd3jVl1iNsNHdpad0qhABJ11twS3TTBnseqsKurKcsNqCEFeGL3uLpVChpIO3QfQ==}
     peerDependencies:
       react: ^19.0.0
 
-  react-hook-form@7.56.2:
-    resolution: {integrity: sha512-vpfuHuQMF/L6GpuQ4c3ZDo+pRYxIi40gQqsCmmfUBwm+oqvBhKhwghCuj2o00YCgSfU6bR9KC/xnQGWm3Gr08A==}
+  react-hook-form@7.56.3:
+    resolution: {integrity: sha512-IK18V6GVbab4TAo1/cz3kqajxbDPGofdF0w7VHdCo0Nt8PrPlOZcuuDq9YYIV1BtjcX78x0XsldbQRQnQXWXmw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -5234,6 +5278,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  use-intl@4.1.0:
+    resolution: {integrity: sha512-mQvDYFvoGn+bm/PWvlQOtluKCknsQ5a9F1Cj0hMfBjMBVTwnOqLPd6srhjvVdEQEQFVyHM1PfyifKqKYb11M9Q==}
+    peerDependencies:
+      react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
 
   use-sidecar@1.1.3:
     resolution: {integrity: sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ==}
@@ -6366,7 +6415,7 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
-  '@cloudflare/workers-types@4.20250507.0': {}
+  '@cloudflare/workers-types@4.20250508.0': {}
 
   '@electric-sql/pglite@0.3.0': {}
 
@@ -6637,13 +6686,43 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
+  '@formatjs/ecma402-abstract@2.3.4':
+    dependencies:
+      '@formatjs/fast-memoize': 2.2.7
+      '@formatjs/intl-localematcher': 0.6.1
+      decimal.js: 10.5.0
+      tslib: 2.8.1
+
+  '@formatjs/fast-memoize@2.2.7':
+    dependencies:
+      tslib: 2.8.1
+
+  '@formatjs/icu-messageformat-parser@2.11.2':
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.3.4
+      '@formatjs/icu-skeleton-parser': 1.8.14
+      tslib: 2.8.1
+
+  '@formatjs/icu-skeleton-parser@1.8.14':
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.3.4
+      tslib: 2.8.1
+
+  '@formatjs/intl-localematcher@0.5.10':
+    dependencies:
+      tslib: 2.8.1
+
+  '@formatjs/intl-localematcher@0.6.1':
+    dependencies:
+      tslib: 2.8.1
+
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@hookform/resolvers@5.0.1(react-hook-form@7.56.2(react@19.0.0))':
+  '@hookform/resolvers@5.0.1(react-hook-form@7.56.3(react@19.0.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.56.2(react@19.0.0)
+      react-hook-form: 7.56.3(react@19.0.0)
 
   '@img/sharp-darwin-arm64@0.33.5':
     optionalDependencies:
@@ -6753,14 +6832,14 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       jest-mock: 29.7.0
 
   '@jest/fake-timers@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -6794,7 +6873,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -6889,7 +6968,7 @@ snapshots:
 
   '@neondatabase/serverless@1.0.0':
     dependencies:
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       '@types/pg': 8.15.0
 
   '@next/env@15.2.4': {}
@@ -6942,7 +7021,7 @@ snapshots:
       rimraf: 3.0.2
     optional: true
 
-  '@op-engineering/op-sqlite@13.0.0(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)':
+  '@op-engineering/op-sqlite@13.0.1(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)':
     dependencies:
       react: 19.0.0
       react-native: 0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0)
@@ -7938,6 +8017,8 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.0
 
+  '@schummar/icu-type-parser@1.21.5': {}
+
   '@sinclair/typebox@0.27.8': {}
 
   '@sinonjs/commons@3.0.1':
@@ -8289,7 +8370,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -8305,7 +8386,7 @@ snapshots:
     dependencies:
       undici-types: 6.11.1
 
-  '@types/node@22.15.14':
+  '@types/node@22.15.16':
     dependencies:
       undici-types: 6.21.0
 
@@ -8600,7 +8681,7 @@ snapshots:
     dependencies:
       open: 8.4.2
 
-  better-sqlite3@11.9.1:
+  better-sqlite3@11.10.0:
     dependencies:
       bindings: 1.5.0
       prebuild-install: 7.1.3
@@ -8649,7 +8730,7 @@ snapshots:
   browserslist@4.24.5:
     dependencies:
       caniuse-lite: 1.0.30001717
-      electron-to-chromium: 1.5.150
+      electron-to-chromium: 1.5.151
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.5)
 
@@ -8751,7 +8832,7 @@ snapshots:
 
   chrome-launcher@0.15.2:
     dependencies:
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -8760,7 +8841,7 @@ snapshots:
 
   chromium-edge-launcher@0.2.0:
     dependencies:
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 1.4.2
@@ -8966,6 +9047,8 @@ snapshots:
 
   decimal.js-light@2.5.1: {}
 
+  decimal.js@10.5.0: {}
+
   decompress-response@6.0.0:
     dependencies:
       mimic-response: 3.1.0
@@ -9012,15 +9095,15 @@ snapshots:
 
   dotenv@16.4.7: {}
 
-  drizzle-orm@0.43.1(d90a63b16a23f5ba5ce426d048a7e628):
+  drizzle-orm@0.43.1(74d3d8b32ed8b93e34ef370d73aa8fd0):
     optionalDependencies:
       '@aws-sdk/client-rds-data': 3.804.0
-      '@cloudflare/workers-types': 4.20250507.0
+      '@cloudflare/workers-types': 4.20250508.0
       '@electric-sql/pglite': 0.3.0
       '@libsql/client': 0.15.4(bufferutil@4.0.9)
       '@libsql/client-wasm': 0.15.4
       '@neondatabase/serverless': 1.0.0
-      '@op-engineering/op-sqlite': 13.0.0(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)
+      '@op-engineering/op-sqlite': 13.0.1(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)
       '@opentelemetry/api': 1.9.0
       '@planetscale/database': 1.19.0
       '@prisma/client': 6.7.0(typescript@5.0.2)
@@ -9030,11 +9113,11 @@ snapshots:
       '@types/sql.js': 1.4.9
       '@vercel/postgres': 0.10.0
       '@xata.io/client': 0.30.1(typescript@5.0.2)
-      better-sqlite3: 11.9.1
+      better-sqlite3: 11.10.0
       bun-types: 1.2.12
       expo-sqlite: 15.2.9(expo@53.0.8(@babel/core@7.27.1)(bufferutil@4.0.9)(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0))(react-native@0.79.2(@babel/core@7.27.1)(@types/react@19.0.0)(bufferutil@4.0.9)(react@19.0.0))(react@19.0.0)
       gel: 2.1.0
-      knex: 3.1.0(better-sqlite3@11.9.1)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7)
+      knex: 3.1.0(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7)
       kysely: 0.28.2
       mysql2: 3.14.1
       pg: 8.15.6
@@ -9046,7 +9129,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.150: {}
+  electron-to-chromium@1.5.151: {}
 
   embla-carousel-react@8.5.1(react@19.0.0):
     dependencies:
@@ -9473,6 +9556,13 @@ snapshots:
 
   interpret@2.2.0: {}
 
+  intl-messageformat@10.7.16:
+    dependencies:
+      '@formatjs/ecma402-abstract': 2.3.4
+      '@formatjs/fast-memoize': 2.2.7
+      '@formatjs/icu-messageformat-parser': 2.11.2
+      tslib: 2.8.1
+
   invariant@2.2.4:
     dependencies:
       loose-envify: 1.4.0
@@ -9552,7 +9642,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -9562,7 +9652,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -9589,7 +9679,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       jest-util: 29.7.0
 
   jest-regex-util@29.6.3: {}
@@ -9597,7 +9687,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -9614,7 +9704,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 22.15.14
+      '@types/node': 22.15.16
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -9651,7 +9741,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knex@3.1.0(better-sqlite3@11.9.1)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7):
+  knex@3.1.0(better-sqlite3@11.10.0)(mysql2@3.14.1)(pg@8.15.6)(sqlite3@5.1.7):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -9668,7 +9758,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      better-sqlite3: 11.9.1
+      better-sqlite3: 11.10.0
       mysql2: 3.14.1
       pg: 8.15.6
       sqlite3: 5.1.7
@@ -10125,7 +10215,19 @@ snapshots:
 
   negotiator@0.6.4: {}
 
+  negotiator@1.0.0: {}
+
   nested-error-stacks@2.0.1: {}
+
+  next-intl@4.1.0(next@15.2.4(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(typescript@5.0.2):
+    dependencies:
+      '@formatjs/intl-localematcher': 0.5.10
+      negotiator: 1.0.0
+      next: 15.2.4(@babel/core@7.27.1)(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      use-intl: 4.1.0(react@19.0.0)
+    optionalDependencies:
+      typescript: 5.0.2
 
   next-themes@0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -10549,7 +10651,7 @@ snapshots:
       date-fns: 4.1.0
       react: 19.0.0
 
-  react-devtools-core@6.1.1(bufferutil@4.0.9):
+  react-devtools-core@6.1.2(bufferutil@4.0.9):
     dependencies:
       shell-quote: 1.8.2
       ws: 7.5.10(bufferutil@4.0.9)
@@ -10562,7 +10664,7 @@ snapshots:
       react: 19.0.0
       scheduler: 0.25.0
 
-  react-hook-form@7.56.2(react@19.0.0):
+  react-hook-form@7.56.3(react@19.0.0):
     dependencies:
       react: 19.0.0
 
@@ -10605,7 +10707,7 @@ snapshots:
       pretty-format: 29.7.0
       promise: 8.3.0
       react: 19.0.0
-      react-devtools-core: 6.1.1(bufferutil@4.0.9)
+      react-devtools-core: 6.1.2(bufferutil@4.0.9)
       react-refresh: 0.14.2
       regenerator-runtime: 0.13.11
       scheduler: 0.25.0
@@ -11231,6 +11333,13 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@types/react': 19.0.0
+
+  use-intl@4.1.0(react@19.0.0):
+    dependencies:
+      '@formatjs/fast-memoize': 2.2.7
+      '@schummar/icu-type-parser': 1.21.5
+      intl-messageformat: 10.7.16
+      react: 19.0.0
 
   use-sidecar@1.1.3(@types/react@19.0.0)(react@19.0.0):
     dependencies:

@@ -86,6 +86,7 @@
     "@cloudflare/workers-types": "latest",
     "@op-engineering/op-sqlite": "latest",
     "drizzle-orm": "latest",
+    "next-intl": "latest",
     "@tanstack/react-table": "latest"
   },
   "devDependencies": {

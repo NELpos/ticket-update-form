@@ -1,0 +1,111 @@
+{
+  "common": {
+    "ticketManagementSystem": "티켓 관리 시스템",
+    "search": "검색",
+    "filter": "필터",
+    "edit": "편집",
+    "new": "신규",
+    "cancel": "취소",
+    "save": "저장",
+    "confirm": "확인",
+    "yes": "예",
+    "no": "아니요",
+    "reset": "초기화",
+    "complete": "완료",
+    "retry": "다시 시도",
+    "next": "다음",
+    "previous": "이전",
+    "back": "뒤로",
+    "selected": "{count}개 선택됨 (총 {total}개)"
+  },
+  "tickets": {
+    "title": "티켓",
+    "ticketName": "티켓 이름",
+    "severity": "위험도",
+    "status": "상태",
+    "assignee": "담당자",
+    "reporter": "보고자",
+    "priority": "우선순위",
+    "dueDate": "마감일",
+    "category": "카테고리",
+    "environment": "환경",
+    "estimatedTime": "예상 소요 시간",
+    "createdAt": "생성 날짜",
+    "editSelected": "선택한 티켓 편집",
+    "newTicket": "새 티켓",
+    "noResults": "결과가 없습니다.",
+    "filterByName": "티켓 이름으로 필터링..."
+  },
+  "severityOptions": {
+    "low": "낮음",
+    "medium": "중간",
+    "high": "높음",
+    "critical": "긴급"
+  },
+  "statusOptions": {
+    "waiting": "대기중",
+    "inProgress": "진행중",
+    "reviewing": "검토중",
+    "completed": "완료"
+  },
+  "priorityOptions": {
+    "low": "낮음",
+    "normal": "보통",
+    "high": "높음",
+    "highest": "최우선"
+  },
+  "categoryOptions": {
+    "bug": "버그",
+    "improvement": "기능개선",
+    "newFeature": "신규기능",
+    "documentation": "문서화",
+    "maintenance": "유지보수"
+  },
+  "environmentOptions": {
+    "development": "개발",
+    "testing": "테스트",
+    "staging": "스테이징",
+    "production": "운영"
+  },
+  "chat": {
+    "title": "고객 지원 채팅",
+    "description": "실시간 지원을 통해 문의사항을 해결하세요",
+    "inputPlaceholder": "메시지를 입력하세요...",
+    "history": "히스토리 {current}/{total}"
+  },
+  "ticketEdit": {
+    "title": "티켓 일괄 편집",
+    "description": "선택된 {count}개의 티켓을 일괄 편집합니다. 변경하지 않을 필드는 비워두세요.",
+    "confirmation": "티켓 업데이트 확인",
+    "confirmationDesc": "선택한 {count}개의 티켓에 대해 다음 변경사항을 적용하시겠습니까?",
+    "selectedTickets": "선택된 티켓 ({count}개)",
+    "fieldsToChange": "변경될 필드 ({count}개)",
+    "noFieldsChanged": "변경된 필드가 없습니다.",
+    "updateResults": "티켓 업데이트 결과",
+    "updateResultsDesc": "{total}개의 티켓 중 {success}개 성공, {failed}개 실패",
+    "success": "성공 ({count}개)",
+    "failed": "실패 ({count}개)",
+    "updateTime": "업데이트 시간: {time}",
+    "attemptTime": "시도 시간: {time}",
+    "changes": "변경 내역:",
+    "field": "필드",
+    "oldValue": "이전 값",
+    "newValue": "새 값",
+    "searchFields": "필드 검색...",
+    "optional": "{label} (선택사항)"
+  },
+  "ticketDetails": {
+    "title": "티켓 상세",
+    "backToList": "티켓 목록으로 돌아가기",
+    "ticketId": "티켓 ID: {id}",
+    "description": "설명",
+    "activity": "활동 내역",
+    "today": "오늘",
+    "yesterday": "어제",
+    "editTicket": "티켓 편집",
+    "changeStatus": "상태 변경",
+    "statusChanged": "{name}님이 티켓을 {status}(으)로 변경했습니다.",
+    "assignedTo": "{name}님이 티켓을 할당받았습니다.",
+    "createdBy": "{name}님이 티켓을 생성했습니다."
+  }
+}

@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useTranslations } from "next-intl"
 
 // 메시지 타입 정의
 type Message = {
@@ -17,34 +18,40 @@ type Message = {
   timestamp: Date
 }
 
-// 샘플 메시지 데이터
-const initialMessages: Message[] = [
-  {
-    id: "1",
-    content: "안녕하세요! 티켓 관리 시스템에 오신 것을 환영합니다. 무엇을 도와드릴까요?",
-    sender: "agent",
-    timestamp: new Date(Date.now() - 3600000), // 1시간 전
-  },
-  {
-    id: "2",
-    content: "티켓 #1234에 대해 문의하고 싶습니다.",
-    sender: "user",
-    timestamp: new Date(Date.now() - 1800000), // 30분 전
-  },
-  {
-    id: "3",
-    content: "네, 티켓 #1234는 현재 '진행중' 상태입니다. 어떤 정보가 필요하신가요?",
-    sender: "agent",
-    timestamp: new Date(Date.now() - 1700000), // 28분 전
-  },
-]
+// 샘플 메시지 데이터 - 로케일에 따라 컴포넌트에서 동적으로 생성할 것입니다
 
 export function ChatPanel() {
-  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const t = useTranslations("chat")
+  const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [messageHistory, setMessageHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // 초기 메시지 생성
+  useEffect(() => {
+    const initialMessages: Message[] = [
+      {
+        id: "1",
+        content: t("description"),
+        sender: "agent",
+        timestamp: new Date(Date.now() - 3600000), // 1시간 전
+      },
+      {
+        id: "2",
+        content: "티켓 #1234에 대해 문의하고 싶습니다.",
+        sender: "user",
+        timestamp: new Date(Date.now() - 1800000), // 30분 전
+      },
+      {
+        id: "3",
+        content: "네, 티켓 #1234는 현재 '진행중' 상태입니다. 어떤 정보가 필요하신가요?",
+        sender: "agent",
+        timestamp: new Date(Date.now() - 1700000), // 28분 전
+      },
+    ]
+    setMessages(initialMessages)
+  }, [t])
 
   // 새 메시지가 추가될 때마다 스크롤을 아래로 이동
   useEffect(() => {
@@ -129,8 +136,8 @@ export function ChatPanel() {
   return (
     <div className="flex flex-col h-full border rounded-md overflow-hidden bg-background">
       <div className="p-3 border-b bg-muted/30">
-        <h2 className="text-lg font-semibold">고객 지원 채팅</h2>
-        <p className="text-sm text-muted-foreground">실시간 지원을 통해 문의사항을 해결하세요</p>
+        <h2 className="text-lg font-semibold">{t("title")}</h2>
+        <p className="text-sm text-muted-foreground">{t("description")}</p>
       </div>
 
       <ScrollArea className="flex-1 p-4">
@@ -168,7 +175,7 @@ export function ChatPanel() {
       <div className="p-3 border-t">
         <div className="flex gap-2">
           <Input
-            placeholder="메시지를 입력하세요..."
+            placeholder={t("inputPlaceholder")}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -180,7 +187,7 @@ export function ChatPanel() {
         </div>
         {historyIndex >= 0 && (
           <p className="text-xs text-muted-foreground mt-1">
-            히스토리 {historyIndex + 1}/{messageHistory.length}
+            {t("history", { current: historyIndex + 1, total: messageHistory.length })}
           </p>
         )}
       </div>

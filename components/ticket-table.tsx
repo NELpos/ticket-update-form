@@ -15,6 +15,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { Filter, PlusCircle } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { useLocale } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -43,7 +45,7 @@ export type Ticket = {
   environment: "개발" | "테스트" | "스테이징" | "운영"
   estimatedTime: string
   reporter: string
-  createdAt: string // 생성 날짜 필드 추가
+  createdAt: string
 }
 
 export type OptionData = {
@@ -62,11 +64,44 @@ interface TicketTableProps {
 
 export const TicketTable = ({ initialOptions }: TicketTableProps) => {
   const router = useRouter()
+  const t = useTranslations()
+  const locale = useLocale()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
   const [isEditSidebarOpen, setIsEditSidebarOpen] = useState(false)
+
+  // 현재 언어에 맞게 상태 값 번역
+  const translateStatus = (status: string) => {
+    if (locale === "en") {
+      switch (status) {
+        case "대기중":
+          return "Waiting"
+        case "진행중":
+          return "In Progress"
+        case "검토중":
+          return "Reviewing"
+        case "완료":
+          return "Completed"
+        case "낮음":
+          return "Low"
+        case "중간":
+          return "Medium"
+        case "높음":
+          return "High"
+        case "긴급":
+          return "Critical"
+        case "보통":
+          return "Normal"
+        case "최우선":
+          return "Highest"
+        default:
+          return status
+      }
+    }
+    return status
+  }
 
   const columns: ColumnDef<Ticket>[] = [
     {
@@ -75,7 +110,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
         <Checkbox
           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="모든 행 선택"
+          aria-label={locale === "ko" ? "모든 행 선택" : "Select all rows"}
           onClick={(e) => {
             // 이벤트 버블링 방지
             e.stopPropagation()
@@ -86,7 +121,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="행 선택"
+          aria-label={locale === "ko" ? "행 선택" : "Select row"}
           onClick={(e) => {
             // 이벤트 버블링 방지
             e.stopPropagation()
@@ -98,65 +133,65 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
     },
     {
       accessorKey: "name",
-      header: "티켓 이름",
+      header: t("tickets.ticketName"),
       cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
       accessorKey: "severity",
-      header: "위험도",
+      header: t("tickets.severity"),
       cell: ({ row }) => {
         const severity = row.getValue("severity") as string
         return (
           <Badge
             variant={
-              severity === "긴급"
+              severity === "긴급" || severity === "critical"
                 ? "destructive"
-                : severity === "높음"
+                : severity === "높음" || severity === "high"
                   ? "outline"
-                  : severity === "중간"
+                  : severity === "중간" || severity === "medium"
                     ? "secondary"
                     : "default"
             }
           >
-            {severity}
+            {translateStatus(severity)}
           </Badge>
         )
       },
     },
     {
       accessorKey: "status",
-      header: "상태",
+      header: t("tickets.status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string
         return (
           <Badge
             variant={
-              status === "완료"
+              status === "완료" || status === "completed"
                 ? "default"
-                : status === "진행중"
+                : status === "진행중" || status === "inProgress"
                   ? "outline"
-                  : status === "검토중"
+                  : status === "검토중" || status === "reviewing"
                     ? "secondary"
                     : "destructive"
             }
           >
-            {status}
+            {translateStatus(status)}
           </Badge>
         )
       },
     },
     {
       accessorKey: "assignee",
-      header: "담당자",
+      header: t("tickets.assignee"),
       cell: ({ row }) => <div>{row.getValue("assignee")}</div>,
     },
     {
       accessorKey: "createdAt",
-      header: "생성 날짜",
+      header: t("tickets.createdAt"),
       cell: ({ row }) => {
         const createdAt = row.getValue("createdAt") as string
         // ISO 날짜 문자열을 YYYY-MM-DD 형식으로 변환
-        const formattedDate = new Date(createdAt).toLocaleDateString()
+        const formattedDate = new Date(createdAt).toLocaleDateString(locale === "ko" ? "ko-KR" : "en-US")
         return <div className="text-muted-foreground text-sm">{formattedDate}</div>
       },
     },
@@ -188,7 +223,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Input
-            placeholder="티켓 이름으로 필터링..."
+            placeholder={t("tickets.filterByName")}
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
             className="max-w-sm"
@@ -197,7 +232,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="ml-auto h-8 gap-1">
                 <Filter className="h-3.5 w-3.5" />
-                <span>필터</span>
+                <span>{t("common.filter")}</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -205,6 +240,29 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
                 .map((column) => {
+                  const columnId = column.id
+                  let columnLabel = ""
+
+                  switch (columnId) {
+                    case "name":
+                      columnLabel = t("tickets.ticketName")
+                      break
+                    case "severity":
+                      columnLabel = t("tickets.severity")
+                      break
+                    case "status":
+                      columnLabel = t("tickets.status")
+                      break
+                    case "assignee":
+                      columnLabel = t("tickets.assignee")
+                      break
+                    case "createdAt":
+                      columnLabel = t("tickets.createdAt")
+                      break
+                    default:
+                      columnLabel = columnId
+                  }
+
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
@@ -212,17 +270,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) => column.toggleVisibility(!!value)}
                     >
-                      {column.id === "name"
-                        ? "티켓 이름"
-                        : column.id === "severity"
-                          ? "위험도"
-                          : column.id === "status"
-                            ? "상태"
-                            : column.id === "assignee"
-                              ? "담당자"
-                              : column.id === "createdAt"
-                                ? "생성 날짜"
-                                : column.id}
+                      {columnLabel}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -236,11 +284,11 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
             onClick={() => setIsEditSidebarOpen(true)}
             disabled={table.getFilteredSelectedRowModel().rows.length === 0}
           >
-            선택한 티켓 편집
+            {t("tickets.editSelected")}
           </Button>
           <Button size="sm" className="gap-1">
             <PlusCircle className="h-3.5 w-3.5" />
-            <span>새 티켓</span>
+            <span>{t("tickets.newTicket")}</span>
           </Button>
         </div>
       </div>
@@ -269,7 +317,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
                       onClick={(e) => {
                         // 선택 칼럼이 아닌 경우에만 행 클릭 이벤트 처리
                         if (cell.column.id !== "select") {
-                          router.push(`/tickets/${row.original.id}`)
+                          router.push(`/${locale}/tickets/${row.original.id}`)
                         }
                       }}
                       className={cell.column.id !== "select" ? "cursor-pointer" : ""}
@@ -282,7 +330,7 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  결과가 없습니다.
+                  {t("tickets.noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -291,7 +339,10 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length}개 선택됨 (총 {table.getFilteredRowModel().rows.length}개)
+          {t("common.selected", {
+            count: table.getFilteredSelectedRowModel().rows.length,
+            total: table.getFilteredRowModel().rows.length,
+          })}
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -300,10 +351,10 @@ export const TicketTable = ({ initialOptions }: TicketTableProps) => {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            이전
+            {t("common.previous")}
           </Button>
           <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            다음
+            {t("common.next")}
           </Button>
         </div>
       </div>
