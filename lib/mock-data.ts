@@ -1,29 +1,36 @@
 import type { ChatRoom, Message, User } from "./types"
 
+// 채팅방 타입 정의
+export const chatRoomTypes = ["고객 서비스", "기술 지원", "판매 상담", "제품 문의", "일반 상담"]
+
 export const mockUsers: User[] = [
   {
     id: "user-001",
     name: "김민준",
     email: "minjun.kim@example.com",
     avatar: "MK",
+    role: "admin",
   },
   {
     id: "user-002",
     name: "이지은",
     email: "jieun.lee@example.com",
     avatar: "JL",
+    role: "manager",
   },
   {
     id: "user-003",
     name: "박서준",
     email: "seojun.park@example.com",
     avatar: "SP",
+    role: "user",
   },
   {
     id: "user-004",
     name: "최수아",
     email: "sua.choi@example.com",
     avatar: "SC",
+    role: "user",
   },
 ]
 
@@ -34,6 +41,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-10T15:30:00Z",
     messageCount: 8,
     userId: "user-001",
+    type: "일반 상담",
   },
   {
     id: "chat-002",
@@ -41,6 +49,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-11T09:45:00Z",
     messageCount: 12,
     userId: "user-002",
+    type: "판매 상담",
   },
   {
     id: "chat-003",
@@ -48,6 +57,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-11T14:20:00Z",
     messageCount: 15,
     userId: "user-003",
+    type: "기술 지원",
   },
   {
     id: "chat-004",
@@ -55,6 +65,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-09T11:15:00Z",
     messageCount: 6,
     userId: "user-001",
+    type: "기술 지원",
   },
   {
     id: "chat-005",
@@ -62,6 +73,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-08T16:40:00Z",
     messageCount: 20,
     userId: "user-004",
+    type: "일반 상담",
   },
   {
     id: "chat-006",
@@ -69,6 +81,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-07T13:25:00Z",
     messageCount: 9,
     userId: "user-002",
+    type: "제품 문의",
   },
   {
     id: "chat-007",
@@ -76,6 +89,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-06T19:10:00Z",
     messageCount: 14,
     userId: "user-003",
+    type: "일반 상담",
   },
   {
     id: "chat-008",
@@ -83,6 +97,7 @@ export const mockChatRooms: ChatRoom[] = [
     lastActivity: "2025-05-05T10:50:00Z",
     messageCount: 7,
     userId: "user-004",
+    type: "판매 상담",
   },
 ]
 
@@ -350,3 +365,25 @@ export const mockMessages: Message[] = [
     timestamp: "2025-05-11T14:21:30Z",
   },
 ]
+
+// 확장된 채팅방 생성 함수
+export const generateMoreChatRooms = () => {
+  const additionalChatRooms = []
+  const baseRooms = [...mockChatRooms]
+
+  for (let i = 0; i < 30; i++) {
+    const baseRoom = baseRooms[i % baseRooms.length]
+    additionalChatRooms.push({
+      ...baseRoom,
+      id: `chat-extra-${i + 1}`,
+      title: `${baseRoom.title} ${i + 1}`,
+      lastActivity: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+      type: chatRoomTypes[Math.floor(Math.random() * chatRoomTypes.length)],
+      userId: mockUsers[Math.floor(Math.random() * mockUsers.length)].id,
+    })
+  }
+
+  return [...mockChatRooms, ...additionalChatRooms]
+}
+
+export const extendedChatRooms = generateMoreChatRooms()

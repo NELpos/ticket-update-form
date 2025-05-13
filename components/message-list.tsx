@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { formatDistanceToNow } from "date-fns"
 import { ChevronDown, ChevronUp, User, Bot } from "lucide-react"
+import { JsonViewer } from "@/components/json-viewer"
 import type { Message } from "@/lib/types"
 
 interface MessageListProps {
@@ -75,7 +76,9 @@ export function MessageList({ messages }: MessageListProps) {
 
                     <CollapsibleContent>
                       <div className="mt-2 p-3 bg-muted rounded-md overflow-x-auto">
-                        <pre className="text-xs">{JSON.stringify(content, null, 2)}</pre>
+                        <div className="text-xs font-mono">
+                          <JsonViewer data={content} />
+                        </div>
                       </div>
                     </CollapsibleContent>
                   </Collapsible>

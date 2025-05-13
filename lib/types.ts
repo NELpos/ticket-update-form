@@ -3,6 +3,7 @@ export interface User {
   name: string
   email: string
   avatar?: string
+  role: "admin" | "user" | "manager" // 사용자 역할 추가
 }
 
 export interface ChatRoom {
@@ -10,7 +11,8 @@ export interface ChatRoom {
   title: string
   lastActivity: string
   messageCount: number
-  userId: string // Add userId to link chat rooms to users
+  userId: string
+  type: string // 채팅방 산업 분류 추가
 }
 
 export interface Message {
