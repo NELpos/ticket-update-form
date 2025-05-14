@@ -37,7 +37,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Label } from "@/components/ui/label"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 
 // 사용자 타입 정의
 interface User {
@@ -61,6 +64,17 @@ const mockUsers: User[] = Array.from({ length: 50 }, (_, i) => ({
   updatedAt: new Date(Date.now() - Math.random() * 5000000000).toISOString(),
 }))
 
+// 새 사용자 폼 스키마 정의
+const userFormSchema = z.object({
+  name: z.string().min(2, { message: "이름은 2글자 이상이어야 합니다." }),
+  email: z.string().email({ message: "올바른 이메일 형식이 아닙니다." }),
+  role: z.enum(["user", "admin"], {
+    required_error: "역할을 선택해주세요.",
+  }),
+})
+
+type UserFormValues = z.infer<typeof userFormSchema>
+
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>(mockUsers)
   const [searchQuery, setSearchQuery] = useState("")
@@ -70,14 +84,17 @@ export default function UsersPage() {
   const [selectAll, setSelectAll] = useState(false)
   const [bulkRole, setBulkRole] = useState<"user" | "admin" | "">("")
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
-  // 새 사용자 추가 상태
-  const [newUser, setNewUser] = useState({
-    name: "",
-    email: "",
-    role: "user" as "user" | "admin",
-  })
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  // react-hook-form 설정
+  const form = useForm<UserFormValues>({
+    resolver: zodResolver(userFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "user",
+    },
+  })
 
   // 검색 필터링된 사용자
   const filteredUsers = users.filter(
@@ -148,32 +165,14 @@ export default function UsersPage() {
     }
   }
 
-  // 새 사용자 추가
-  const handleAddUser = () => {
-    // 입력 검증
-    if (!newUser.name.trim()) {
-      alert("이름을 입력해주세요.")
-      return
-    }
-
-    if (!newUser.email.trim()) {
-      alert("이메일을 입력해주세요.")
-      return
-    }
-
-    // 이메일 형식 검증
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(newUser.email)) {
-      alert("올바른 이메일 형식이 아닙니다.")
-      return
-    }
-
+  // 새 사용자 추가 (react-hook-form 사용)
+  const onSubmit = (data: UserFormValues) => {
     // 새 사용자 생성
     const newUserData: User = {
       id: `user-${Date.now()}`,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
+      name: data.name,
+      email: data.email,
+      role: data.role,
       auth: "local", // 로컬 사용자만 추가 가능
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -183,17 +182,21 @@ export default function UsersPage() {
     setUsers((prev) => [newUserData, ...prev])
 
     // 폼 초기화
-    setNewUser({
-      name: "",
-      email: "",
-      role: "user",
-    })
+    form.reset()
 
     // 다이얼로그 닫기
     setIsDialogOpen(false)
 
     // 첫 페이지로 이동
     setCurrentPage(1)
+  }
+
+  // 다이얼로그 닫힐 때 폼 초기화
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open)
+    if (!open) {
+      form.reset()
+    }
   }
 
   // 페이지 번호 생성
@@ -277,7 +280,7 @@ export default function UsersPage() {
                 <span>사용자 추가</span>
               </Button>
 
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>새 사용자 추가</DialogTitle>
@@ -285,53 +288,60 @@ export default function UsersPage() {
                       로컬 계정으로 새 사용자를 추가합니다. 모든 필드를 입력해주세요.
                     </DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                        이름
-                      </Label>
-                      <Input
-                        id="name"
-                        value={newUser.name}
-                        onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                        className="col-span-3"
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>이름</FormLabel>
+                            <FormControl>
+                              <Input placeholder="이름을 입력하세요" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="email" className="text-right">
-                        이메일
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={newUser.email}
-                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                        className="col-span-3"
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>이메일</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="이메일을 입력하세요" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="role" className="text-right">
-                        역할
-                      </Label>
-                      <Select
-                        value={newUser.role}
-                        onValueChange={(value) => setNewUser({ ...newUser, role: value as "user" | "admin" })}
-                      >
-                        <SelectTrigger id="role" className="col-span-3">
-                          <SelectValue placeholder="역할 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="user">일반 사용자</SelectItem>
-                          <SelectItem value="admin">관리자</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button type="submit" onClick={handleAddUser}>
-                      추가하기
-                    </Button>
-                  </DialogFooter>
+                      <FormField
+                        control={form.control}
+                        name="role"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>역할</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="역할을 선택하세요" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="user">일반 사용자</SelectItem>
+                                <SelectItem value="admin">관리자</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <DialogFooter>
+                        <Button type="submit">추가하기</Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
                 </DialogContent>
               </Dialog>
             </div>
