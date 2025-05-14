@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, X, UserPlus } from "lucide-react"
+import { Search, X, UserPlus, Trash2 } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
@@ -27,6 +27,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Label } from "@/components/ui/label"
 
 // 사용자 타입 정의
@@ -56,9 +66,10 @@ export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(10)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [selectAll, setSelectAll] = useState(false)
   const [bulkRole, setBulkRole] = useState<"user" | "admin" | "">("")
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   // 새 사용자 추가 상태
   const [newUser, setNewUser] = useState({
@@ -115,6 +126,26 @@ export default function UsersPage() {
     setSelectedUsers([])
     setSelectAll(false)
     setBulkRole("")
+  }
+
+  // 선택된 사용자 삭제
+  const deleteSelectedUsers = () => {
+    // 사용자 목록에서 선택된 사용자 제거
+    setUsers((prev) => prev.filter((user) => !selectedUsers.includes(user.id)))
+
+    // 선택 초기화
+    setSelectedUsers([])
+    setSelectAll(false)
+
+    // 다이얼로그 닫기
+    setIsDeleteDialogOpen(false)
+
+    // 현재 페이지에 표시할 항목이 없는 경우 이전 페이지로 이동
+    const remainingUsers = filteredUsers.filter((user) => !selectedUsers.includes(user.id))
+    const newTotalPages = Math.ceil(remainingUsers.length / itemsPerPage)
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      setCurrentPage(newTotalPages)
+    }
   }
 
   // 새 사용자 추가
@@ -308,30 +339,63 @@ export default function UsersPage() {
         </CardHeader>
         <CardContent>
           {selectedUsers.length > 0 && (
-            <div className="flex items-center gap-2 mb-4 p-2 bg-muted rounded-md">
+            <div className="flex flex-wrap items-center gap-2 mb-4 p-2 bg-muted rounded-md">
               <span className="text-sm">{selectedUsers.length}명의 사용자 선택됨</span>
-              <Select value={bulkRole} onValueChange={(value) => setBulkRole(value as "user" | "admin" | "")}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="일괄 역할 변경" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">일반 사용자</SelectItem>
-                  <SelectItem value="admin">관리자</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="default" size="sm" onClick={applyBulkRoleChange} disabled={!bulkRole}>
-                적용
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedUsers([])
-                  setSelectAll(false)
-                }}
-              >
-                선택 취소
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Select value={bulkRole} onValueChange={(value) => setBulkRole(value as "user" | "admin" | "")}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="일괄 역할 변경" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="user">일반 사용자</SelectItem>
+                    <SelectItem value="admin">관리자</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="default" size="sm" onClick={applyBulkRoleChange} disabled={!bulkRole}>
+                  적용
+                </Button>
+
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  className="flex items-center gap-1"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  삭제
+                </Button>
+
+                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>사용자 삭제</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        선택한 {selectedUsers.length}명의 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>취소</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={deleteSelectedUsers}
+                        className="bg-destructive text-destructive-foreground"
+                      >
+                        삭제
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedUsers([])
+                    setSelectAll(false)
+                  }}
+                >
+                  선택 취소
+                </Button>
+              </div>
             </div>
           )}
 
@@ -384,6 +448,30 @@ export default function UsersPage() {
             </Table>
           </ScrollArea>
 
+          {/* Items Per Page Selector */}
+          <div className="flex items-center justify-end mt-4 mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">페이지당 항목 수:</span>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={(value) => {
+                  setItemsPerPage(Number(value))
+                  setCurrentPage(1) // 페이지당 항목 수 변경 시 첫 페이지로 이동
+                }}
+              >
+                <SelectTrigger className="w-[80px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="25">25</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Pagination */}
           {filteredUsers.length > 0 && (
             <div className="mt-4">
@@ -419,7 +507,7 @@ export default function UsersPage() {
 
               <div className="text-xs text-center text-muted-foreground mt-2">
                 {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredUsers.length)} / {filteredUsers.length}명의
-                사용자
+                사용자 (페이지당 {itemsPerPage}명)
               </div>
             </div>
           )}
