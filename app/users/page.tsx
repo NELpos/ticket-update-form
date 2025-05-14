@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, X } from "lucide-react"
+import { Search, X, UserPlus } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
@@ -19,6 +19,15 @@ import {
 } from "@/components/ui/pagination"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 // 사용자 타입 정의
 interface User {
@@ -50,6 +59,14 @@ export default function UsersPage() {
   const [itemsPerPage] = useState(10)
   const [selectAll, setSelectAll] = useState(false)
   const [bulkRole, setBulkRole] = useState<"user" | "admin" | "">("")
+
+  // 새 사용자 추가 상태
+  const [newUser, setNewUser] = useState({
+    name: "",
+    email: "",
+    role: "user" as "user" | "admin",
+  })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   // 검색 필터링된 사용자
   const filteredUsers = users.filter(
@@ -98,6 +115,54 @@ export default function UsersPage() {
     setSelectedUsers([])
     setSelectAll(false)
     setBulkRole("")
+  }
+
+  // 새 사용자 추가
+  const handleAddUser = () => {
+    // 입력 검증
+    if (!newUser.name.trim()) {
+      alert("이름을 입력해주세요.")
+      return
+    }
+
+    if (!newUser.email.trim()) {
+      alert("이메일을 입력해주세요.")
+      return
+    }
+
+    // 이메일 형식 검증
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(newUser.email)) {
+      alert("올바른 이메일 형식이 아닙니다.")
+      return
+    }
+
+    // 새 사용자 생성
+    const newUserData: User = {
+      id: `user-${Date.now()}`,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      auth: "local", // 로컬 사용자만 추가 가능
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    // 사용자 목록에 추가
+    setUsers((prev) => [newUserData, ...prev])
+
+    // 폼 초기화
+    setNewUser({
+      name: "",
+      email: "",
+      role: "user",
+    })
+
+    // 다이얼로그 닫기
+    setIsDialogOpen(false)
+
+    // 첫 페이지로 이동
+    setCurrentPage(1)
   }
 
   // 페이지 번호 생성
@@ -175,6 +240,69 @@ export default function UsersPage() {
                   </Button>
                 )}
               </div>
+
+              <Button className="flex items-center gap-2" onClick={() => setIsDialogOpen(true)}>
+                <UserPlus className="h-4 w-4" />
+                <span>사용자 추가</span>
+              </Button>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>새 사용자 추가</DialogTitle>
+                    <DialogDescription>
+                      로컬 계정으로 새 사용자를 추가합니다. 모든 필드를 입력해주세요.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="name" className="text-right">
+                        이름
+                      </Label>
+                      <Input
+                        id="name"
+                        value={newUser.name}
+                        onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="email" className="text-right">
+                        이메일
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                        className="col-span-3"
+                      />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="role" className="text-right">
+                        역할
+                      </Label>
+                      <Select
+                        value={newUser.role}
+                        onValueChange={(value) => setNewUser({ ...newUser, role: value as "user" | "admin" })}
+                      >
+                        <SelectTrigger id="role" className="col-span-3">
+                          <SelectValue placeholder="역할 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="user">일반 사용자</SelectItem>
+                          <SelectItem value="admin">관리자</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit" onClick={handleAddUser}>
+                      추가하기
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
         </CardHeader>
