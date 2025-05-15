@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Search, X, UserPlus, Trash2 } from "lucide-react"
+// lucide-react 아이콘 import 부분에 KeyRound, Copy 추가
+import { Search, X, UserPlus, Trash2, KeyRound, Check } from "lucide-react"
 import {
   Pagination,
   PaginationContent,
@@ -41,6 +42,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { useToast } from "@/hooks/use-toast"
 
 // 사용자 타입 정의
 interface User {
@@ -49,29 +51,71 @@ interface User {
   auth: "local" | "sso"
   email: string
   name: string
+  password: string
   createdAt: string
   updatedAt: string
 }
 
-// 목업 데이터
+// 목업 데이터에 password 필드 추가
 const mockUsers: User[] = Array.from({ length: 50 }, (_, i) => ({
   id: `user-${i + 1}`,
   role: i % 5 === 0 ? "admin" : "user",
   auth: i % 3 === 0 ? "sso" : "local",
   email: `user${i + 1}@example.com`,
   name: `사용자 ${i + 1}`,
+  password: generateSecurePassword(), // 초기 비밀번호 생성
   createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
   updatedAt: new Date(Date.now() - Math.random() * 5000000000).toISOString(),
 }))
 
-// 새 사용자 폼 스키마 정의
+// Zod 스키마에 password 필드 추가
 const userFormSchema = z.object({
   name: z.string().min(2, { message: "이름은 2글자 이상이어야 합니다." }),
   email: z.string().email({ message: "올바른 이메일 형식이 아닙니다." }),
   role: z.enum(["user", "admin"], {
     required_error: "역할을 선택해주세요.",
   }),
+  password: z.string().min(8, { message: "비밀번호는 8자 이상이어야 합니다." }),
 })
+
+// 안전한 비밀번호 생성 함수 추가
+function generateSecurePassword(length = 12) {
+  const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  const lowercaseChars = "abcdefghijklmnopqrstuvwxyz"
+  const numberChars = "0123456789"
+  const specialChars = "!@#$%^&*()_+~`|}{[]:;?><,./-="
+
+  const allChars = uppercaseChars + lowercaseChars + numberChars + specialChars
+
+  // 각 문자 유형에서 최소 1개 이상 포함되도록 함
+  let password =
+    uppercaseChars.charAt(Math.floor(Math.random() * uppercaseChars.length)) +
+    lowercaseChars.charAt(Math.floor(Math.random() * lowercaseChars.length)) +
+    numberChars.charAt(Math.floor(Math.random() * numberChars.length)) +
+    specialChars.charAt(Math.floor(Math.random() * specialChars.length))
+
+  // 나머지 문자 랜덤 생성
+  for (let i = 4; i < length; i++) {
+    password += allChars.charAt(Math.floor(Math.random() * allChars.length))
+  }
+
+  // 문자열 섞기
+  return password
+    .split("")
+    .sort(() => 0.5 - Math.random())
+    .join("")
+}
+
+// 클립보드에 텍스트 복사 함수
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch (err) {
+    console.error("클립보드 복사 실패:", err)
+    return false
+  }
+}
 
 type UserFormValues = z.infer<typeof userFormSchema>
 
@@ -85,6 +129,8 @@ export default function UsersPage() {
   const [bulkRole, setBulkRole] = useState<"user" | "admin" | "">("")
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [copySuccess, setCopySuccess] = useState<Record<string, boolean>>({})
+  const { toast } = useToast()
 
   // react-hook-form 설정
   const form = useForm<UserFormValues>({
@@ -93,6 +139,7 @@ export default function UsersPage() {
       name: "",
       email: "",
       role: "user",
+      password: "",
     },
   })
 
@@ -165,14 +212,29 @@ export default function UsersPage() {
     }
   }
 
-  // 새 사용자 추가 (react-hook-form 사용)
-  const onSubmit = (data: UserFormValues) => {
+  // 비밀번호 생성 및 클립보드 복사
+  const generateAndCopyPassword = async () => {
+    const password = generateSecurePassword()
+    form.setValue("password", password)
+
+    const success = await copyToClipboard(password)
+    if (success) {
+      toast({
+        title: "비밀번호가 클립보드에 복사되었습니다.",
+        description: "안전한 곳에 보관하세요.",
+      })
+    }
+  }
+
+  // 새 사용자 추가 (react-hook-form 사용) - password 필드 추가
+  const onSubmit = async (data: UserFormValues) => {
     // 새 사용자 생성
     const newUserData: User = {
       id: `user-${Date.now()}`,
       name: data.name,
       email: data.email,
       role: data.role,
+      password: data.password,
       auth: "local", // 로컬 사용자만 추가 가능
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -180,6 +242,13 @@ export default function UsersPage() {
 
     // 사용자 목록에 추가
     setUsers((prev) => [newUserData, ...prev])
+
+    // 비밀번호 클립보드에 복사
+    await copyToClipboard(data.password)
+    toast({
+      title: "사용자가 추가되었습니다.",
+      description: "비밀번호가 클립보드에 복사되었습니다.",
+    })
 
     // 폼 초기화
     form.reset()
@@ -189,6 +258,35 @@ export default function UsersPage() {
 
     // 첫 페이지로 이동
     setCurrentPage(1)
+  }
+
+  // 비밀번호 초기화 함수 추가
+  const resetPassword = async (userId: string) => {
+    const newPassword = generateSecurePassword()
+
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === userId ? { ...user, password: newPassword, updatedAt: new Date().toISOString() } : user,
+      ),
+    )
+
+    // 비밀번호 클립보드에 복사
+    const success = await copyToClipboard(newPassword)
+
+    if (success) {
+      // 복사 성공 상태 업데이트
+      setCopySuccess((prev) => ({ ...prev, [userId]: true }))
+
+      // 3초 후 복사 성공 상태 초기화
+      setTimeout(() => {
+        setCopySuccess((prev) => ({ ...prev, [userId]: false }))
+      }, 3000)
+
+      toast({
+        title: "비밀번호가 초기화되었습니다.",
+        description: "새 비밀번호가 클립보드에 복사되었습니다.",
+      })
+    }
   }
 
   // 다이얼로그 닫힐 때 폼 초기화
@@ -337,6 +435,29 @@ export default function UsersPage() {
                           </FormItem>
                         )}
                       />
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>비밀번호</FormLabel>
+                            <div className="flex gap-2">
+                              <FormControl>
+                                <Input type="password" placeholder="비밀번호를 입력하세요" {...field} />
+                              </FormControl>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={generateAndCopyPassword}
+                                title="안전한 비밀번호 생성 및 복사"
+                              >
+                                생성
+                              </Button>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <DialogFooter>
                         <Button type="submit">추가하기</Button>
                       </DialogFooter>
@@ -427,6 +548,7 @@ export default function UsersPage() {
                   <TableHead>인증 방식</TableHead>
                   <TableHead>가입일</TableHead>
                   <TableHead>역할</TableHead>
+                  <TableHead className="w-[100px] text-right">액션</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -451,6 +573,21 @@ export default function UsersPage() {
                       <Badge variant={user.role === "admin" ? "destructive" : "default"}>
                         {user.role === "admin" ? "관리자" : "일반 사용자"}
                       </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => resetPassword(user.id)}
+                        title="비밀번호 초기화 및 복사"
+                      >
+                        {copySuccess[user.id] ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <KeyRound className="h-4 w-4" />
+                        )}
+                        <span className="sr-only">비밀번호 초기화</span>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
