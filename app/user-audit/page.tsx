@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -18,12 +20,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Search, X, Filter, Download } from "lucide-react"
+import { Search, X, Filter, Download, ChevronDown, ChevronRight } from "lucide-react"
 import { mockActivityLogs } from "@/lib/mock-activity-logs"
 import { mockUsers } from "@/lib/mock-data"
 import { type UserActivityLog, ActivityTypes } from "@/lib/types"
 import { format } from "date-fns"
 import type { DateRange } from "react-day-picker"
+import { JsonViewer } from "@/components/json-viewer"
 
 export default function UserAuditPage() {
   const [logs, setLogs] = useState<UserActivityLog[]>(mockActivityLogs)
@@ -34,6 +37,15 @@ export default function UserAuditPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({})
+
+  // 행 확장/축소 토글
+  const toggleRowExpansion = (logId: string) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [logId]: !prev[logId],
+    }))
+  }
 
   // 필터링된 로그
   const filteredLogs = logs.filter((log) => {
@@ -45,10 +57,10 @@ export default function UserAuditPage() {
       (log.details && log.details.toLowerCase().includes(searchQuery.toLowerCase()))
 
     // 사용자 필터
-    const matchesUser = selectedUserId === null || log.userId === selectedUserId
+    const matchesUser = selectedUserId === null || selectedUserId === "all" || log.userId === selectedUserId
 
     // 액션 타입 필터
-    const matchesAction = selectedAction === null || log.action === selectedAction
+    const matchesAction = selectedAction === null || selectedAction === "all" || log.action === selectedAction
 
     // 날짜 범위 필터
     const logDate = new Date(log.timestamp)
@@ -247,7 +259,10 @@ export default function UserAuditPage() {
 
               <div className="space-y-2">
                 <p className="text-sm font-medium">사용자</p>
-                <Select value={selectedUserId || ""} onValueChange={(value) => setSelectedUserId(value || null)}>
+                <Select
+                  value={selectedUserId || "all"}
+                  onValueChange={(value) => setSelectedUserId(value === "all" ? null : value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="모든 사용자" />
                   </SelectTrigger>
@@ -264,7 +279,10 @@ export default function UserAuditPage() {
 
               <div className="space-y-2">
                 <p className="text-sm font-medium">액션 타입</p>
-                <Select value={selectedAction || ""} onValueChange={(value) => setSelectedAction(value || null)}>
+                <Select
+                  value={selectedAction || "all"}
+                  onValueChange={(value) => setSelectedAction(value === "all" ? null : value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="모든 액션" />
                   </SelectTrigger>
@@ -291,6 +309,7 @@ export default function UserAuditPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-[30px]"></TableHead>
                   <TableHead>타임스탬프</TableHead>
                   <TableHead>사용자</TableHead>
                   <TableHead>액션</TableHead>
@@ -301,30 +320,58 @@ export default function UserAuditPage() {
               <TableBody>
                 {currentLogs.length > 0 ? (
                   currentLogs.map((log) => (
-                    <TableRow key={log.id}>
-                      <TableCell className="whitespace-nowrap">
-                        {format(new Date(log.timestamp), "yyyy-MM-dd HH:mm:ss")}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{log.userName}</span>
-                          <Badge variant="outline" className="w-fit mt-1">
-                            {log.userRole}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getActionBadgeVariant(log.action)}>{log.action}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm">{log.details}</span>
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap">{log.ipAddress}</TableCell>
-                    </TableRow>
+                    <React.Fragment key={log.id}>
+                      <TableRow
+                        className={expandedRows[log.id] ? "bg-muted/50" : "hover:bg-muted/50 cursor-pointer"}
+                        onClick={() => toggleRowExpansion(log.id)}
+                      >
+                        <TableCell className="p-2">
+                          {expandedRows[log.id] ? (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">
+                          {format(new Date(log.timestamp), "yyyy-MM-dd HH:mm:ss")}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{log.userName}</span>
+                            <Badge variant="outline" className="w-fit mt-1">
+                              {log.userRole}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={getActionBadgeVariant(log.action)}>{log.action}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm">{log.details}</span>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap">{log.ipAddress}</TableCell>
+                      </TableRow>
+                      {expandedRows[log.id] && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="bg-muted/30 p-4">
+                            <div className="rounded-md bg-background p-4 border">
+                              <h4 className="text-sm font-medium mb-2">변경 상세 정보</h4>
+                              {log.changes ? (
+                                <div className="overflow-auto max-h-[400px]">
+                                  <JsonViewer data={log.changes} initialExpanded={true} />
+                                </div>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">상세 변경 정보가 없습니다.</p>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </React.Fragment>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center">
+                    <TableCell colSpan={6} className="h-24 text-center">
                       검색 결과가 없습니다.
                     </TableCell>
                   </TableRow>

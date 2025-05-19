@@ -35,6 +35,7 @@ export interface UserActivityLog {
   details?: string
   ipAddress?: string
   timestamp: string
+  changes?: object // JSON 데이터를 담을 changes 필드 추가
 }
 
 // 활동 로그 타입 상수
